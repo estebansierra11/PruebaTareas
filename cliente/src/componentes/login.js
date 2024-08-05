@@ -1,27 +1,44 @@
+
+
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../App.css';
 
-function Login({ setLoggedInUser, setLoggedInId }) {
+
+const Login = ({ onLogin, onRegister }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+
 
   const handleLogin = () => {
     axios.post('http://localhost/prueba/servidor/api.php?action=login', { username, password })
       .then(response => {
         setMessage(response.data.message);
         if (response.data.username) {
-          setLoggedInUser(response.data.username);
-          setLoggedInId(response.data.id);
+          
+          onLogin(response.data.username, response.data.id);
+          
         }
       })
       .catch(error => {
-        console.error('There was an error logging in!', error);
+        console.error('Error logging in!', error);
+        
+      });
+  };
+
+  const handleRegister = () => {
+    axios.post('http://localhost/prueba/servidor/api.php?action=register', { username, password })
+      .then(response => {
+        setMessage(response.data.message);
+      })
+      .catch(error => {
+        console.error('Error registering!', error);
       });
   };
 
   return (
-    <div className="card p-4">
+    <div className="card p-4" style={{ maxWidth: '400px', margin: '0 auto' }}>
       <h1 className="mb-4">Login</h1>
       <div className="form-group">
         <input
@@ -42,9 +59,10 @@ function Login({ setLoggedInUser, setLoggedInId }) {
         />
       </div>
       <button className="btn btn-primary mb-2" onClick={handleLogin}>Login</button>
+      <button className="btn btn-secondary mb-2" onClick={handleRegister}>Register</button>
       <p>{message}</p>
     </div>
   );
-}
+};
 
 export default Login;

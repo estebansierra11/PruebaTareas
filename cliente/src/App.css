@@ -1,5 +1,18 @@
+/* App.css */
 .App {
+  display: flex;
   text-align: center;
+}
+
+.content {
+  margin-left: 0;
+  padding: 20px;
+  transition: margin-left 0.3s;
+  flex-grow: 1;
+}
+
+.content-shift {
+  margin-left: 250px; /* igual al ancho de la sidebar cuando está abierta */
 }
 
 .App-logo {
