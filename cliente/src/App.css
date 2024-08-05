@@ -7,6 +7,55 @@
   pointer-events: none;
 }
 
+
+
+@media (max-width: 786px) {
+  .button-text {
+    display: none;
+  }
+
+  #inputTarea{
+    width: 20px;
+  }
+  
+
+
+  .button-icon {
+    display: inline-block;
+  }
+}
+
+@keyframes blink {
+  0% {
+    border-color: green;
+  }
+
+  50% {
+    border-color: transparent;
+  }
+
+  100% {
+    border-color: green;
+  }
+}
+
+#blinking {
+  animation: blink 1s step-start 0s 3;
+  
+  border: 1px solid green;
+}
+
+
+@media (min-width: 787px) {
+  .button-text {
+    display: inline;
+  }
+
+  .button-icon {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -32,6 +81,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

@@ -1,0 +1,56 @@
+.profile-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-icon {
+  cursor: pointer;
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  width: 200px; /* Aumenta el ancho de la caja */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.menu li:last-child {
+  border-bottom: none;
+}
+
+.menu li button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  color: #333;
+  transition: background-color 0.3s;
+}
+
+.menu li button:hover {
+  background-color: #f1f1f1;
+}
+
+.menu-icon {
+  margin-right: 8px;
+}
