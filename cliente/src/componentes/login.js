@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 import '../App.css';
 
 
@@ -9,6 +10,7 @@ const Login = ({ onLogin, onRegister }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
 
   const handleLogin = () => {
@@ -16,14 +18,15 @@ const Login = ({ onLogin, onRegister }) => {
       .then(response => {
         setMessage(response.data.message);
         if (response.data.username) {
-          
-          onLogin(response.data.username, response.data.id);
-          
+
+          navigate('/TaskList', { state: { username: response.data.username, id: response.data.id } });
+
+
         }
       })
       .catch(error => {
         console.error('Error logging in!', error);
-        
+
       });
   };
 
@@ -38,6 +41,7 @@ const Login = ({ onLogin, onRegister }) => {
   };
 
   return (
+    <div className='content'>
     <div className="card p-4" style={{ maxWidth: '400px', margin: '0 auto' }}>
       <h1 className="mb-4">Login</h1>
       <div className="form-group">
@@ -61,6 +65,7 @@ const Login = ({ onLogin, onRegister }) => {
       <button className="btn btn-primary mb-2" onClick={handleLogin}>Login</button>
       <button className="btn btn-secondary mb-2" onClick={handleRegister}>Register</button>
       <p>{message}</p>
+    </div>
     </div>
   );
 };

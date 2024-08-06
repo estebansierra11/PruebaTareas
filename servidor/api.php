@@ -149,7 +149,7 @@ function login($conn) {
             echo json_encode(['message' => 'Contraseña Invalida']);
         }
     } else {
-        echo json_encode(['message' => 'El usuario no existe']);
+        echo json_encode(['message' => 'El usuario no exiuuuuuste']);
     }
 }
 
@@ -177,6 +177,7 @@ function getTasks($conn) {
 
 function logout() {
     session_destroy();
+    session_unset();
     echo json_encode(['message' => 'Cerró sesión exitosamente']);
 }
 ?>

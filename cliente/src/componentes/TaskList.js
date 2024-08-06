@@ -13,12 +13,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import ProfileMenu from '../componentes/profileMenu';
 import DropExport from '../componentes/dropExport';
 import '../App.css';
-import Login from '../componentes/login';
+//import Login from '../componentes/login';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 
 function TaskList() {
-
-  const [loggedInUser, setLoggedInUser] = useState(null);
-  const [loggedInId, setLoggedInId] = useState(null);
+  const location = useLocation();
+  const [loggedInUser, setLoggedInUser] = useState(location.state?.username || null);
+  const [loggedInId, setLoggedInId] = useState(location.state?.id || null);
 
 
   const [tasks, setTasks] = useState([]);
@@ -27,7 +30,9 @@ function TaskList() {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [isBlinking, setIsBlinking] = useState(false);
   const [searchTerms, setSearchTerms] = useState({ task: '' });
-  
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     if (loggedInUser) {
@@ -52,6 +57,7 @@ function TaskList() {
       .then(response => {
         setLoggedInUser(null);
         setTasks([]);
+        navigate('/login');
 
       })
       .catch(error => {
@@ -159,141 +165,150 @@ function TaskList() {
     });
     fetchTasks(loggedInUser);
   };
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
-    <div className="container mt-5">
-     
-      {loggedInUser ? (
-        
-        <div>
-          
-          
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '120px' }}>
-            <h1 style={{ paddingTop: '14px' }} className="mb-4">Bienvenido, <span style={{ color: 'skyBlue' }} id='efectoEscritura'>{loggedInUser}</span></h1>
-            <ProfileMenu onLogout={handleLogout} />
-          </div>
+    <>
+    <SideBar isOpen={isOpen} toggleSidebar={toggleSidebar} />
 
-          <DropExport tableId="taskTable" />
-          <h2>Tasks</h2>
-          <ToastContainer />
-          <div className="mb-3">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '0px' }}>
-              <div style={{ flex: 1, textAlign: 'left' }}>
-                {!isAddingTask ? (
-                  <button className="btn btn-success" style={{ display: 'flex' }} onClick={() => setIsAddingTask(true)}>
-                    <FontAwesomeIcon icon={faPlus} />
-                  </button>
-                ) : (
-                  <div className="d-flex align-items-start">
+      <div className={`content ${isOpen ? 'content-shift' : ''}`}>
+        <div className="container mt-5">
+
+
+
+
+          <div>
+
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '120px' }}>
+              <h1 style={{ paddingTop: '14px' }} className="mb-4">Bienvenido, <span style={{ color: 'skyBlue' }} id='efectoEscritura'>{loggedInUser}</span></h1>
+              <ProfileMenu onLogout={handleLogout} />
+            </div>
+
+            <DropExport tableId="taskTable" />
+            <h2>Tasks</h2>
+            <ToastContainer />
+            <div className="mb-3">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '0px' }}>
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  {!isAddingTask ? (
+                    <button className="btn btn-success" style={{ display: 'flex' }} onClick={() => setIsAddingTask(true)}>
+                      <FontAwesomeIcon icon={faPlus} />
+                    </button>
+                  ) : (
+                    <div className="d-flex align-items-start">
+                      <input
+                        id='inputTarea'
+                        type="text"
+                        value={task}
+                        onChange={(e) => setTask(e.target.value)}
+                        className="form-control"
+                        placeholder="Nueva tarea"
+                        style={{ marginRight: '10px' }}
+                      />
+                      <button className="btn btn-success mr-1" id='boton' onClick={addTask} style={{ marginRight: '10px' }}>
+                        <span className="button-text">Agregar</span>
+                        <FontAwesomeIcon icon={faSave} className="button-icon" />
+                      </button>
+                      <button className="btn btn-secondary" id='boton' onClick={cancelAddTask}>
+                        <span className="button-text">Cancelar</span>
+                        <FontAwesomeIcon icon={faCancel} className="button-icon" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <div className="align-right">
+                  <div className="input-group flex-nowrap">
                     <input
-                      id='inputTarea'
-                      type="text"
-                      value={task}
-                      onChange={(e) => setTask(e.target.value)}
-                      className="form-control"
-                      placeholder="Nueva tarea"
-                      style={{ marginRight: '10px' }}
-                    />
-                    <button className="btn btn-success mr-1" id='boton' onClick={addTask} style={{ marginRight: '10px' }}>
-                      <span className="button-text">Agregar</span>
-                      <FontAwesomeIcon icon={faSave} className="button-icon" />
-                    </button>
-                    <button className="btn btn-secondary" id='boton' onClick={cancelAddTask}>
-                      <span className="button-text">Cancelar</span>
-                      <FontAwesomeIcon icon={faCancel} className="button-icon" />
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div className="align-right">
-                <div className="input-group flex-nowrap">
-                  <input
 
-                    type="text"
-                    className="form-control"
-                    placeholder="Buscar"
-                    aria-label="Buscar"
-                    aria-describedby="addon-wrapping"
-                    value={searchTerms.task}
-                    onChange={(e) => handleSearchTermChange(e, 'task')}
-                    style={{ width: '250px' }}
-                  />
-                  <span className="input-group-text" id="addon-wrapping">
-                    <FontAwesomeIcon icon={faMagnifyingGlass} />
-                  </span>
+                      type="text"
+                      className="form-control"
+                      placeholder="Buscar"
+                      aria-label="Buscar"
+                      aria-describedby="addon-wrapping"
+                      value={searchTerms.task}
+                      onChange={(e) => handleSearchTermChange(e, 'task')}
+                      style={{ width: '250px' }}
+                    />
+                    <span className="input-group-text" id="addon-wrapping">
+                      <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {filteredTasks.length > 0 ? (
+              <table id='taskTable' className="table table-striped">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Tarea</th>
+                    <th>Completada</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredTasks.map(task => (
+                    <tr key={task.id}>
+                      <td>{task.id}</td>
+                      <td>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id={isBlinking === task.id ? 'blinking' : ''}
+                          value={editTask.id === task.id ? editTask.task : task.task}
+                          onChange={editTask.id === task.id ? handleEditTaskChange : null}
+                          style={{ backgroundColor: task.completed === 'Hecha' ? 'green' : 'white' }}
+                          disabled={editTask.id !== task.id}
+                        />
+                      </td>
+                      <td>{task.completed}</td>
+                      <td>
+                        {editTask.id === task.id ? (
+                          <>
+                            <button className="btn btn-success mr-1" id='boton' onClick={saveTask} style={{ marginRight: '10px' }}>
+                              <span className="button-text">Guardar</span>
+                              <FontAwesomeIcon icon={faSave} className="button-icon" />
+                            </button>
+                            <button className="btn btn-secondary" id='boton' onClick={cancelEditTask}>
+                              <span className="button-text">Cancelar</span>
+                              <FontAwesomeIcon icon={faCancel} className="button-icon" />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button className="btn btn-warning" id='boton' style={{ marginRight: '3px', display: task.completed === 'Hecha' ? 'none' : '' }} onClick={() => startEditTask(task)}>
+                              <span className="button-text">Editar</span>
+                              <FontAwesomeIcon icon={faEdit} className="button-icon" />
+                            </button>
+                            <button className="btn btn-primary" id='boton' style={{ marginRight: '3px', display: task.completed === 'Hecha' ? 'none' : '' }} onClick={() => markTask(task.id)}>
+                              <span className="button-text">Hecha</span>
+                              <FontAwesomeIcon icon={faCheck} className="button-icon" />
+                            </button>
+                            <button className="btn btn-danger" id='boton' onClick={() => confirmDeleteTask(task.id)}>
+                              <span className="button-text">Eliminar</span>
+                              <FontAwesomeIcon icon={faTrash} className="button-icon" />
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No hay tareas</p>
+            )}
           </div>
 
-          {filteredTasks.length > 0 ? (
-            <table id='taskTable' className="table table-striped">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Tarea</th>
-                  <th>Completada</th>
-                  <th>Acción</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTasks.map(task => (
-                  <tr key={task.id}>
-                    <td>{task.id}</td>
-                    <td>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id={isBlinking === task.id ? 'blinking' : ''}
-                        value={editTask.id === task.id ? editTask.task : task.task}
-                        onChange={editTask.id === task.id ? handleEditTaskChange : null}
-                        style={{ backgroundColor: task.completed === 'Hecha' ? 'green' : 'white' }}
-                        disabled={editTask.id !== task.id}
-                      />
-                    </td>
-                    <td>{task.completed}</td>
-                    <td>
-                      {editTask.id === task.id ? (
-                        <>
-                          <button className="btn btn-success mr-1" id='boton' onClick={saveTask} style={{ marginRight: '10px' }}>
-                            <span className="button-text">Guardar</span>
-                            <FontAwesomeIcon icon={faSave} className="button-icon" />
-                          </button>
-                          <button className="btn btn-secondary" id='boton' onClick={cancelEditTask}>
-                            <span className="button-text">Cancelar</span>
-                            <FontAwesomeIcon icon={faCancel} className="button-icon" />
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button className="btn btn-warning" id='boton' style={{ marginRight: '3px', display: task.completed === 'Hecha' ? 'none' : '' }} onClick={() => startEditTask(task)}>
-                            <span className="button-text">Editar</span>
-                            <FontAwesomeIcon icon={faEdit} className="button-icon" />
-                          </button>
-                          <button className="btn btn-primary" id='boton' style={{ marginRight: '3px', display: task.completed === 'Hecha' ? 'none' : '' }} onClick={() => markTask(task.id)}>
-                            <span className="button-text">Hecha</span>
-                            <FontAwesomeIcon icon={faCheck} className="button-icon" />
-                          </button>
-                          <button className="btn btn-danger" id='boton' onClick={() => confirmDeleteTask(task.id)}>
-                            <span className="button-text">Eliminar</span>
-                            <FontAwesomeIcon icon={faTrash} className="button-icon" />
-                          </button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No hay tareas</p>
-          )}
         </div>
-      ) : (
-        <Login onLogin={(username, id) => { setLoggedInUser(username); setLoggedInId(id); }} />
-      )}
-    </div>
+      </div>
+    </>
   );
+
 }
 
 export default TaskList;

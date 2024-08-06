@@ -1,19 +1,20 @@
-/* App.css */
 .App {
   display: flex;
   text-align: center;
+  flex-direction: column; /* Cambia la dirección del flexbox a columna para pantallas más pequeñas */
 }
 
 .content {
-  margin-left: 0;
+  margin-left: 60px; /* Ancho de la sidebar cuando está cerrada */
   padding: 20px;
   transition: margin-left 0.3s;
   flex-grow: 1;
 }
 
 .content-shift {
-  margin-left: 250px; /* igual al ancho de la sidebar cuando está abierta */
+  margin-left: 250px; /* Ancho de la sidebar cuando está abierta */
 }
+
 
 .App-logo {
   height: 40vmin;

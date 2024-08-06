@@ -1,7 +1,7 @@
-/* Sidebar.css */
 .sidebar {
     height: 100%;
-    width: 0;
+    width: 60px;
+    /* Establece el ancho inicial de la barra lateral cuando está cerrada */
     position: fixed;
     top: 0;
     left: 0;
@@ -9,14 +9,22 @@
     overflow-x: hidden;
     transition: width 0.3s;
     padding-top: 60px;
-    z-index: 1000; /* Asegura que esté sobre el contenido principal */
-  }
-  
-  .sidebar.open {
+    z-index: 1000;
+    /* Asegura que esté sobre el contenido principal */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centra el contenido horizontalmente */
+}
+
+.sidebar.open {
     width: 250px;
-  }
-  
-  .toggle-button {
+    /* Ancho de la barra lateral cuando está abierta */
+    align-items: flex-start;
+    /* Alinea el contenido a la izquierda cuando está abierta */
+}
+
+.toggle-button {
     position: fixed;
     top: 10px;
     left: 10px;
@@ -25,37 +33,70 @@
     border: none;
     padding: 10px;
     cursor: pointer;
-    z-index: 1001; /* Asegura que esté sobre la sidebar */
-  }
-  
-  .sidebar-content {
+    z-index: 1001;
+    /* Asegura que esté sobre la sidebar */
+    font-size: 20px;
+    /* Tamaño del ícono */
+}
+
+.sidebar-content {
     margin-top: 40px;
-  }
-  
-  .sidebar h2 {
-    color: white;
-    text-align: center;
-  }
-  
-  .sidebar ul {
+}
+
+.sidebar ul {
     list-style-type: none;
     padding: 0;
-  }
-  
-  .sidebar ul li {
+    width: 100%;
+    /* Asegura que el ul ocupe todo el ancho disponible */
+}
+
+.sidebar ul li {
     padding: 10px;
-    text-align: center;
+    text-align: left;
     border-bottom: 1px solid #333;
-  }
-  
-  .sidebar ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Centra el contenido horizontalmente */
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li:hover {
+    background-color: #575757;
+    /* Aplica el hover al li */
+}
+
+.sidebar.open ul li {
+    justify-content: flex-start;
+    /* Alinea el contenido a la izquierda cuando está abierta */
+}
+
+.sidebar.open .sidebar-content {
+    width: 100%;
+}
+
+.sidebar ul li a {
     color: white;
     text-decoration: none;
-    display: block;
-    transition: 0.3s;
-  }
-  
-  .sidebar ul li a:hover {
-    background-color: #575757;
-  }
-  
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.sidebar ul li a span {
+    margin-left: 10px;
+    display: inline-block;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.sidebar.open ul li a span {
+    opacity: 1;
+}
+
+.sidebar ul li a .fa-icon {
+    width: 60px;
+    /* Ajusta el ancho del ícono */
+    text-align: center;
+    /* Centra el ícono dentro de su contenedor */
+}
