@@ -11,6 +11,13 @@
   flex-grow: 1;
 }
 
+.content-login {
+  margin-left: 0px; /* Ancho de la sidebar cuando está cerrada */
+  padding: 20px;
+  transition: margin-left 0.3s;
+  flex-grow: 1;
+}
+
 .content-shift {
   margin-left: 250px; /* Ancho de la sidebar cuando está abierta */
 }
@@ -29,7 +36,7 @@
   }
 
   #inputTarea{
-    width: 20px;
+    width: 300px;
   }
   
 

@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import SideBar from '../componentes/SideBar';
 import axios from 'axios';
@@ -13,17 +11,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import ProfileMenu from '../componentes/profileMenu';
 import DropExport from '../componentes/dropExport';
 import '../App.css';
-//import Login from '../componentes/login';
-import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-
-function TaskList() {
-  const location = useLocation();
-  const [loggedInUser, setLoggedInUser] = useState(location.state?.username || null);
-  const [loggedInId, setLoggedInId] = useState(location.state?.id || null);
-
-
+const TaskList = ({ user, onLogout }) => {
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState('');
   const [editTask, setEditTask] = useState({ id: null, task: '' });
@@ -33,12 +23,11 @@ function TaskList() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    if (loggedInUser) {
-      fetchTasks(loggedInUser);
+    if (user) {
+      fetchTasks(user.username);
     }
-  }, [loggedInUser]);
+  }, [user]);
 
   const fetchTasks = async (username) => {
     try {
@@ -55,10 +44,8 @@ function TaskList() {
   const handleLogout = () => {
     axios.get('http://localhost/prueba/servidor/api.php?action=logout')
       .then(response => {
-        setLoggedInUser(null);
-        setTasks([]);
+        onLogout();
         navigate('/login');
-
       })
       .catch(error => {
         console.error('Error logging out!', error);
@@ -70,12 +57,12 @@ function TaskList() {
       await fetch('http://localhost/prueba/servidor/api.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task, id: loggedInId }),
+        body: JSON.stringify({ task, id: user.id }),
       });
 
       toast.success('Tarea agregada con éxito!');
       setTask('');
-      fetchTasks(loggedInUser);
+      fetchTasks(user.username);
     } else {
       Swal.fire("El campo no puede estar vacío!");
     }
@@ -110,7 +97,7 @@ function TaskList() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
     });
-    fetchTasks(loggedInUser);
+    fetchTasks(user.username);
   };
 
   const startEditTask = (task) => {
@@ -142,7 +129,7 @@ function TaskList() {
       body: JSON.stringify({ id, task: newTask, isedit }),
     });
     toast.success('Tarea editada con éxito!');
-    fetchTasks(loggedInUser);
+    fetchTasks(user.username);
     setEditTask({ id: null, task: '' });
   };
 
@@ -163,15 +150,16 @@ function TaskList() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, completed: 1 }),
     });
-    fetchTasks(loggedInUser);
+    fetchTasks(user.username);
   };
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
   return (
     <>
-    <SideBar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <SideBar isOpen={isOpen} toggleSidebar={toggleSidebar} />
 
       <div className={`content ${isOpen ? 'content-shift' : ''}`}>
         <div className="container mt-5">
@@ -183,7 +171,7 @@ function TaskList() {
 
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '120px' }}>
-              <h1 style={{ paddingTop: '14px' }} className="mb-4">Bienvenido, <span style={{ color: 'skyBlue' }} id='efectoEscritura'>{loggedInUser}</span></h1>
+              <h1 style={{ paddingTop: '14px' }} className="mb-4">Bienvenido, <span style={{ color: 'skyBlue' }} id='efectoEscritura'>{user.username}</span></h1>
               <ProfileMenu onLogout={handleLogout} />
             </div>
 
@@ -206,7 +194,7 @@ function TaskList() {
                         onChange={(e) => setTask(e.target.value)}
                         className="form-control"
                         placeholder="Nueva tarea"
-                        style={{ marginRight: '10px' }}
+                        style={{ marginRight: '10px', width:'300px' }}
                       />
                       <button className="btn btn-success mr-1" id='boton' onClick={addTask} style={{ marginRight: '10px' }}>
                         <span className="button-text">Agregar</span>
@@ -308,7 +296,6 @@ function TaskList() {
       </div>
     </>
   );
-
-}
+};
 
 export default TaskList;
