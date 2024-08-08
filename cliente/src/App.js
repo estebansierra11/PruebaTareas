@@ -24,7 +24,7 @@ const App = () => {
             <div className="App">
                 <Routes>
                     <Route path="/" element={<Navigate to={isAuthenticated ? "/TaskList" : "/login"} />} />
-                    <Route path="/Home" element={isAuthenticated ? <Home/> : <Navigate to="/login" />} />
+                    <Route path="/Home" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
                     <Route path="/TaskList" element={isAuthenticated ? <TaskList user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
                     <Route path="/login" element={<Login onLogin={handleLogin} />} />
                 </Routes>

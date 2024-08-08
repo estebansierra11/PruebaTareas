@@ -194,7 +194,7 @@ const TaskList = ({ user, onLogout }) => {
                         onChange={(e) => setTask(e.target.value)}
                         className="form-control"
                         placeholder="Nueva tarea"
-                        style={{ marginRight: '10px', width:'300px' }}
+                        style={{ marginRight: '10px', width: '300px' }}
                       />
                       <button className="btn btn-success mr-1" id='boton' onClick={addTask} style={{ marginRight: '10px' }}>
                         <span className="button-text">Agregar</span>
@@ -210,7 +210,7 @@ const TaskList = ({ user, onLogout }) => {
                 <div className="align-right">
                   <div className="input-group flex-nowrap">
                     <input
-
+                      id='inputBuscar'
                       type="text"
                       className="form-control"
                       placeholder="Buscar"

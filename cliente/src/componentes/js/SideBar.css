@@ -1,6 +1,6 @@
 .sidebar {
     height: 100%;
-    width: 60px;
+    width: 50px;
     /* Establece el ancho inicial de la barra lateral cuando está cerrada */
     position: fixed;
     top: 0;
@@ -21,6 +21,7 @@
     width: 250px;
     /* Ancho de la barra lateral cuando está abierta */
     align-items: flex-start;
+    padding-left: 10px;
     /* Alinea el contenido a la izquierda cuando está abierta */
 }
 

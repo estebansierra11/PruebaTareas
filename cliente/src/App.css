@@ -17,10 +17,12 @@
   transition: margin-left 0.3s;
   flex-grow: 1;
 }
-
+/*
 .content-shift {
-  margin-left: 250px; /* Ancho de la sidebar cuando está abierta */
+  margin-left: 250px;  Ancho de la sidebar cuando está abierta 
 }
+*/
+
 
 
 .App-logo {
@@ -43,6 +45,10 @@
 
   .button-icon {
     display: inline-block;
+  }
+
+  .content{
+    padding: 0px;
   }
 }
 
