@@ -28,11 +28,19 @@ db.connect((err) => {
 function getTasks(req, res) {
     const { username } = req.query;
     const sql = `
-        SELECT t.id, t.task, t.completed, e.name, DATE_FORMAT(t.dateTime, '%d-%m-%Y %H:%i') as dateTime
-        FROM tasks t
-        inner join employee e
-        on t.employee=e.id
-        ORDER BY dateTime asc`;
+        SELECT 
+  t.id, 
+  t.task, 
+  t.completed, 
+  e.name, 
+  DATE_FORMAT(t.dateTime, '%d-%m-%Y %H:%i') as dateTime,
+  TIMESTAMPDIFF(DAY,NOW(), t.dateTime) as totalDays
+FROM tasks t
+INNER JOIN employee e ON t.employee = e.id
+ORDER BY totalDays ASC;
+
+
+`;
 
     db.query(sql, (err, result) => {
         if (err) {
@@ -73,7 +81,7 @@ function updateTask(req, res) {
 function addTask(req, res) {
     const { task, id, dateLimit, employee } = req.body;
     //const date = dateLimit.replace('T', ' ');
-    const sql = `INSERT INTO tasks (task, employee, completed, dateTime) VALUES ('${task}', '1', 'Pendiente', '${dateLimit}')`;
+    const sql = `INSERT INTO tasks (task, employee, completed, dateTime) VALUES ('${task}', '${employee}', 'Pendiente', '${dateLimit}')`;
     console.log(sql);
 
     db.query(sql, (err) => {
@@ -102,9 +110,6 @@ app.delete('/', (req, res) => {
     deleteTask(req, res);
 });
 
-
-
-// Create a route to call getTasks
 app.get('/tasks', (req, res) => {
     getTasks(req, res);
 });
@@ -123,5 +128,5 @@ app.put('/', (req, res) => {
 
 
 app.listen(3001, () => {
-    console.log("Server running on port 3001");
+    console.log("corriendo: 3001");
 });

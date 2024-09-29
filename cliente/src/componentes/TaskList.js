@@ -79,7 +79,7 @@ const TaskList = ({ user, onLogout }) => {
 
 
   const addTask = async () => {
-    console.log(dateLimit);
+    console.log(employee);
     if (task !== '') {
       await fetch('http://localhost:3001/addTasks', {
         method: 'POST',
@@ -315,6 +315,7 @@ const TaskList = ({ user, onLogout }) => {
                     <th>Estado</th>
                     <th>Responsable</th>
                     <th>Limite</th>
+                    <th>Dias rest.</th>
                     <th>Acción</th>
                   </tr>
                 </thead>
@@ -337,6 +338,7 @@ const TaskList = ({ user, onLogout }) => {
 
                       <td>{task.name}</td>
                       <td>{task.dateTime}</td>
+                      <td>{task.totalDays}</td>
                       <td>
                         {editTask.id === task.id ? (
                           <>
