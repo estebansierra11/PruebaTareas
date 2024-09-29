@@ -15,31 +15,53 @@ import { useNavigate } from 'react-router-dom';
 
 const TaskList = ({ user, onLogout }) => {
   const [tasks, setTasks] = useState([]);
+  const [dateLimit, setDateLimit] = useState('');
+  const [employee, setEmployee] = useState('');
+  const [dataEmployee, setDataEmployee] = useState([]);
   const [task, setTask] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editTask, setEditTask] = useState({ id: null, task: '' });
-  const [isAddingTask, setIsAddingTask] = useState(false);
+  //const [isAddingTask, setIsAddingTask] = useState(false);
   const [isBlinking, setIsBlinking] = useState(false);
   const [searchTerms, setSearchTerms] = useState({ task: '' });
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      fetchTasks(user.username);
-    }
+
+    fetchTasks();
+    getEmployee();
+
   }, [user]);
 
   const fetchTasks = async (username) => {
     try {
-      const response = await axios.get('http://localhost/prueba/servidor/api.php', {
-        params: { username },
+      const response = await axios.get('http://localhost:3001/tasks', {
+
         withCredentials: true
       });
+
       setTasks(response.data);
+      //console.log(response);
     } catch (error) {
       console.error('Error fetching tasks', error);
     }
   };
+
+  const getEmployee = async (username) => {
+    try {
+      const response = await axios.get('http://localhost:3001/getEmployee', {
+
+        withCredentials: true
+      });
+
+      setDataEmployee(response.data);
+      //console.log(response);
+    } catch (error) {
+      console.error('Error fetching tasks', error);
+    }
+  };
+
 
   const handleLogout = () => {
     axios.get('http://localhost/prueba/servidor/api.php?action=logout')
@@ -52,26 +74,29 @@ const TaskList = ({ user, onLogout }) => {
       });
   };
 
+
+
+
+
   const addTask = async () => {
+    console.log(dateLimit);
     if (task !== '') {
-      await fetch('http://localhost/prueba/servidor/api.php', {
+      await fetch('http://localhost:3001/addTasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task, id: user.id }),
+        body: JSON.stringify({ task, dateLimit, employee }),
       });
 
       toast.success('Tarea agregada con éxito!');
       setTask('');
-      fetchTasks(user.username);
+      fetchTasks();
+      handleCloseModal();
     } else {
       Swal.fire("El campo no puede estar vacío!");
     }
   };
 
-  const cancelAddTask = () => {
-    setTask('');
-    setIsAddingTask(false);
-  };
+
 
   const confirmDeleteTask = (id) => {
     Swal.fire({
@@ -92,12 +117,12 @@ const TaskList = ({ user, onLogout }) => {
   };
 
   const deleteTask = async (id) => {
-    await fetch('http://localhost/prueba/servidor/api.php', {
+    await fetch('http://localhost:3001/', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
     });
-    fetchTasks(user.username);
+    fetchTasks();
   };
 
   const startEditTask = (task) => {
@@ -123,13 +148,13 @@ const TaskList = ({ user, onLogout }) => {
   };
 
   const updateTask = async (id, newTask, isedit) => {
-    await fetch('http://localhost/prueba/servidor/api.php', {
+    await fetch('http://localhost:3001/', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, task: newTask, isedit }),
     });
     toast.success('Tarea editada con éxito!');
-    fetchTasks(user.username);
+    fetchTasks();
     setEditTask({ id: null, task: '' });
   };
 
@@ -145,16 +170,24 @@ const TaskList = ({ user, onLogout }) => {
   );
 
   const markTask = async (id) => {
-    await fetch('http://localhost/prueba/servidor/api.php', {
+    await fetch('http://localhost:3001/', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, completed: 1 }),
     });
-    fetchTasks(user.username);
+    fetchTasks();
   };
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -171,41 +204,86 @@ const TaskList = ({ user, onLogout }) => {
 
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '120px' }}>
-              <h1 style={{ paddingTop: '14px' }} className="mb-4">Bienvenido, <span style={{ color: 'skyBlue' }} id='efectoEscritura'>{user.username}</span></h1>
+              <h1 style={{ paddingTop: '14px' }} className="mb-4">Bienvenido, <span style={{ color: 'skyBlue' }} id='efectoEscritura'>Administrador</span></h1>
               <ProfileMenu onLogout={handleLogout} />
             </div>
 
             <DropExport tableId="taskTable" />
-            <h2>Tasks</h2>
+            <h2 style={{ textAlign: 'center' }}>Tasks</h2>
             <ToastContainer />
             <div className="mb-3">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '0px' }}>
                 <div style={{ flex: 1, textAlign: 'left' }}>
-                  {!isAddingTask ? (
-                    <button className="btn btn-success" style={{ display: 'flex' }} onClick={() => setIsAddingTask(true)}>
+                  <div>
+                    <button className="btn btn-success" onClick={handleOpenModal}>
                       <FontAwesomeIcon icon={faPlus} />
                     </button>
-                  ) : (
-                    <div className="d-flex align-items-start">
-                      <input
-                        id='inputTarea'
-                        type="text"
-                        value={task}
-                        onChange={(e) => setTask(e.target.value)}
-                        className="form-control"
-                        placeholder="Nueva tarea"
-                        style={{ marginRight: '10px', width: '300px' }}
-                      />
-                      <button className="btn btn-success mr-1" id='boton' onClick={addTask} style={{ marginRight: '10px' }}>
-                        <span className="button-text">Agregar</span>
-                        <FontAwesomeIcon icon={faSave} className="button-icon" />
-                      </button>
-                      <button className="btn btn-secondary" id='boton' onClick={cancelAddTask}>
-                        <span className="button-text">Cancelar</span>
-                        <FontAwesomeIcon icon={faCancel} className="button-icon" />
-                      </button>
+
+                    {}
+                    <div className={`modal fade ${isModalOpen ? 'show d-block' : ''}`} tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                      <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title">Agregar Nueva Tarea</h5>
+
+
+                          </div>
+
+                          <div className="modal-body">
+                            <div className="form-group">
+                              <label htmlFor="inputTarea">Nueva tarea</label>
+                              <input
+                                id="inputTarea"
+                                type="text"
+                                value={task}
+                                onChange={(e) => setTask(e.target.value)}
+                                className="form-control"
+                                placeholder="Escribe la tarea"
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="inputTarea">Responsable:</label>
+                              <select
+                                id="inputResponsable"
+                                type="text"
+                                value={employee}
+                                onChange={(e) => setEmployee(e.target.value)}
+                                className="form-control"
+                                placeholder="Escribe la tarea"
+                              >
+                                <option value="" >selecciona</option>
+                                {dataEmployee.map((dEmployee)=>(
+                                  <option key={dEmployee.id} value={dEmployee.id}>
+                                    {dEmployee.name}
+                                  </option>
+                                ))}
+
+                              </select>
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="inputTarea">Fecha limite</label>
+                              <input
+                                id="inputFechaLimite"
+                                type="datetime-local"
+                                value={dateLimit}
+                                onChange={(e) => setDateLimit(e.target.value)}
+                                className="form-control"
+
+                              />
+                            </div>
+                          </div>
+
+                          <div className="modal-footer">
+                            <button className="btn btn-success" onClick={addTask}>
+                              <FontAwesomeIcon icon={faSave} className="mr-1" />
+                              Agregar
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModal}>Close</button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
                 <div className="align-right">
                   <div className="input-group flex-nowrap">
@@ -234,7 +312,9 @@ const TaskList = ({ user, onLogout }) => {
                   <tr>
                     <th>ID</th>
                     <th>Tarea</th>
-                    <th>Completada</th>
+                    <th>Estado</th>
+                    <th>Responsable</th>
+                    <th>Limite</th>
                     <th>Acción</th>
                   </tr>
                 </thead>
@@ -254,6 +334,9 @@ const TaskList = ({ user, onLogout }) => {
                         />
                       </td>
                       <td>{task.completed}</td>
+
+                      <td>{task.name}</td>
+                      <td>{task.dateTime}</td>
                       <td>
                         {editTask.id === task.id ? (
                           <>
