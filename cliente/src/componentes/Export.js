@@ -6,7 +6,7 @@ import html2canvas from 'html2canvas';
 import { utils, writeFile } from 'xlsx';
 import './js/dropExport.css';
 
-const DropExport = ({ tableId }) => {
+const Export = ({ tableId }) => {
     const exportToPDF = async () => {
         const input = document.getElementById(tableId);
         if (!input) {
@@ -14,18 +14,47 @@ const DropExport = ({ tableId }) => {
             return;
         }
 
-        const canvas = await html2canvas(input);
+    
+        const columnsToHide = input.querySelectorAll('.hide-column');
+        columnsToHide.forEach(col => {
+            col.style.display = 'none';
+        });
+
+        
+        const canvas = await html2canvas(input, { scale: 2 }); 
         const imgData = canvas.toDataURL('image/png');
 
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, 'PNG', 0, 0);
+        
+        const pdf = new jsPDF({
+            orientation: 'landscape', 
+            unit: 'px',
+            format: 'a4'
+        });
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+
+    
+        const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+
+        const imgScaledWidth = imgWidth * ratio;
+        const imgScaledHeight = imgHeight * ratio;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, imgScaledWidth, imgScaledHeight);
         pdf.save('table.pdf');
+
+        
+        columnsToHide.forEach(col => {
+            col.style.display = '';
+        });
     };
 
     const exportToExcel = () => {
         const table = document.getElementById(tableId);
         if (!table) {
-            console.error("Table not found");
+            console.error("Tabla no existe");
             return;
         }
 
@@ -33,10 +62,13 @@ const DropExport = ({ tableId }) => {
         for (let row of table.rows) {
             const rowData = [];
             for (let cell of row.cells) {
-                if (cell.querySelector('input')) {
-                    rowData.push(cell.querySelector('input').value);
-                } else {
-                    rowData.push(cell.innerText);
+                
+                if (!cell.classList.contains('hide-column')) {
+                    if (cell.querySelector('input')) {
+                        rowData.push(cell.querySelector('input').value);
+                    } else {
+                        rowData.push(cell.innerText);
+                    }
                 }
             }
             rows.push(rowData);
@@ -73,4 +105,6 @@ const DropExport = ({ tableId }) => {
     );
 };
 
-export default DropExport;
+export default Export;
+
+

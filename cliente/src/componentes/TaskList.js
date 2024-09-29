@@ -9,7 +9,7 @@ import { faPlus, faMagnifyingGlass, faSave, faCancel, faEdit, faCheck, faTrash }
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import ProfileMenu from '../componentes/profileMenu';
-import DropExport from '../componentes/dropExport';
+import Export from './Export';
 import '../App.css';
 //import { useNavigate } from 'react-router-dom';
 
@@ -236,7 +236,7 @@ const TaskList = ({ user, onLogout }) => {
               <ProfileMenu />
             </div>
 
-            <DropExport tableId="taskTable" />
+            <Export tableId="taskTable" />
             <h2 style={{ textAlign: 'center' }}>Tasks</h2>
             <ToastContainer />
             <div className="mb-3">
@@ -392,8 +392,8 @@ const TaskList = ({ user, onLogout }) => {
                     <th>Estado</th>
                     <th>Responsable</th>
                     <th>Limite</th>
-                    <th>Dias rest.</th>
-                    <th>Acción</th>
+                    <th className='hide-column'>Dias rest.</th>
+                    <th className='hide-column'>Acción</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -415,8 +415,8 @@ const TaskList = ({ user, onLogout }) => {
 
                       <td>{task.name}</td>
                       <td>{task.dateTime}</td>
-                      <td>{task.totalDays}</td>
-                      <td>
+                      <td className='hide-column'>{task.totalDays}</td>
+                      <td className='hide-column'>
                         {editTask.id === task.id ? (
                           <>
                             <button className="btn btn-success mr-1" id='boton' onClick={saveTask} style={{ marginRight: '10px' }}>
