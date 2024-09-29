@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMagnifyingGlass, faSave, faCancel, faEdit, faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faSave, faCancel, faEdit, faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import ProfileMenu from '../componentes/profileMenu';
@@ -237,14 +237,14 @@ const TaskList = ({ user, onLogout }) => {
             </div>
 
             <Export tableId="taskTable" />
-            <h2 style={{ textAlign: 'center' }}>Tasks</h2>
+            <h2 style={{ textAlign: 'center' }}>Tareas</h2>
             <ToastContainer />
             <div className="mb-3">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '0px' }}>
                 <div style={{ flex: 1, textAlign: 'left' }}>
                   <div>
                     <button className="btn btn-success" onClick={handleOpenModal}>
-                      <FontAwesomeIcon icon={faPlus} />
+                      Agregar tarea
                     </button>
 
                     { }
@@ -311,12 +311,7 @@ const TaskList = ({ user, onLogout }) => {
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="align-right">
-
-                  <div className="input-group flex-nowrap">
-                    <button className="btn btn-success" style={{ marginRight: '5px' }} onClick={handleOpenModalEmployee}>
+                    <button className="btn btn-success" style={{ marginLeft: '5px' }} onClick={handleOpenModalEmployee}>
                       Agregar Empleado
                     </button>
                     <div className={`modal fade ${openModalEmployee ? 'show d-block' : ''}`} tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
@@ -341,7 +336,7 @@ const TaskList = ({ user, onLogout }) => {
                               />
                             </div>
                             <div className="form-group">
-                              <label htmlFor="inputTarea">Nombre</label>
+                              <label htmlFor="inputTarea">Apellido</label>
                               <input
                                 id="inputLastName"
                                 type="text"
@@ -355,7 +350,7 @@ const TaskList = ({ user, onLogout }) => {
                           </div>
 
                           <div className="modal-footer">
-                            <button className="btn btn-primary" onClick={addEmployee}>
+                            <button className="btn btn-success" onClick={addEmployee}>
 
                               Agregar
                             </button>
@@ -364,6 +359,12 @@ const TaskList = ({ user, onLogout }) => {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div className="align-right">
+
+                  <div className="input-group flex-nowrap">
+
                     <input
                       id='inputBuscar'
                       type="text"
