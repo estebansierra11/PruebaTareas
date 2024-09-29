@@ -11,21 +11,24 @@ import { ToastContainer, toast } from 'react-toastify';
 import ProfileMenu from '../componentes/profileMenu';
 import DropExport from '../componentes/dropExport';
 import '../App.css';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 
 const TaskList = ({ user, onLogout }) => {
   const [tasks, setTasks] = useState([]);
   const [dateLimit, setDateLimit] = useState('');
+  const [newName, setNewName] = useState('');
+  const [newLastName, setNewLastName] = useState('');
   const [employee, setEmployee] = useState('');
   const [dataEmployee, setDataEmployee] = useState([]);
   const [task, setTask] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openModalEmployee, setopenModalEmployee] = useState(false);
   const [editTask, setEditTask] = useState({ id: null, task: '' });
   //const [isAddingTask, setIsAddingTask] = useState(false);
   const [isBlinking, setIsBlinking] = useState(false);
   const [searchTerms, setSearchTerms] = useState({ task: '' });
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   useEffect(() => {
 
@@ -58,30 +61,16 @@ const TaskList = ({ user, onLogout }) => {
       setDataEmployee(response.data);
       //console.log(response);
     } catch (error) {
-      console.error('Error fetching tasks', error);
+      console.error('Error', error);
     }
   };
-
-
-  const handleLogout = () => {
-    axios.get('http://localhost/prueba/servidor/api.php?action=logout')
-      .then(response => {
-        onLogout();
-        navigate('/login');
-      })
-      .catch(error => {
-        console.error('Error logging out!', error);
-      });
-  };
-
-
 
 
 
   const addTask = async () => {
     const currentDate = new Date();
     const dateNow = currentDate.toISOString().slice(0, 19);
-    console.log(dateNow);
+    //console.log(dateNow);
     if (task !== '' && dateLimit !== '' && employee !== '' && dateLimit > dateNow) {
       await fetch('http://localhost:3001/addTasks', {
         method: 'POST',
@@ -94,11 +83,33 @@ const TaskList = ({ user, onLogout }) => {
       setDateLimit('');
       setEmployee('');
       fetchTasks();
-      handleCloseModal();
+      closeModal();
     } else {
       Swal.fire("Los campos no pueden estar vacíos y la fecha no puede ser menor a la actual!");
     }
   };
+
+  const addEmployee = async () => {
+    //console.log(newName);
+    //console.log(newLastName);
+    if (newName !== '' && newLastName !== '') {
+      await fetch('http://localhost:3001/addEmployee', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newName, newLastName }),
+      });
+
+      toast.success('Empleado agregado con éxito!');
+      setNewName('');
+      setNewLastName('');
+      fetchTasks();
+      getEmployee();
+      closeModal();
+    } else {
+      Swal.fire("Los campos no pueden estar vacíos!");
+    }
+  };
+
 
 
 
@@ -198,9 +209,13 @@ const TaskList = ({ user, onLogout }) => {
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
+  const handleOpenModalEmployee = () => {
+    setopenModalEmployee(true);
+  };
 
-  const handleCloseModal = () => {
+  const closeModal = () => {
     setIsModalOpen(false);
+    setopenModalEmployee(false);
   };
 
   return (
@@ -218,7 +233,7 @@ const TaskList = ({ user, onLogout }) => {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '120px' }}>
               <h1 style={{ paddingTop: '14px' }} className="mb-4">Bienvenido, <span style={{ color: 'skyBlue' }} id='efectoEscritura'>Administrador</span></h1>
-              <ProfileMenu onLogout={handleLogout} />
+              <ProfileMenu />
             </div>
 
             <DropExport tableId="taskTable" />
@@ -291,7 +306,7 @@ const TaskList = ({ user, onLogout }) => {
 
                               Agregar
                             </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModal}>Cerrar</button>
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={closeModal}>Cerrar</button>
                           </div>
                         </div>
                       </div>
@@ -301,9 +316,54 @@ const TaskList = ({ user, onLogout }) => {
                 <div className="align-right">
 
                   <div className="input-group flex-nowrap">
-                    <button className="btn btn-success" style={{ marginRight: '5px' }} onClick={handleOpenModal}>
+                    <button className="btn btn-success" style={{ marginRight: '5px' }} onClick={handleOpenModalEmployee}>
                       Agregar Empleado
                     </button>
+                    <div className={`modal fade ${openModalEmployee ? 'show d-block' : ''}`} tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                      <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title">Agregar nuevo empleado</h5>
+
+
+                          </div>
+
+                          <div className="modal-body">
+                            <div className="form-group">
+                              <label htmlFor="inputTarea">Nombre</label>
+                              <input
+                                id="inputNombre"
+                                type="text"
+                                value={newName}
+                                onChange={(e) => setNewName(e.target.value)}
+                                className="form-control"
+                                placeholder="Digite el nombre"
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="inputTarea">Nombre</label>
+                              <input
+                                id="inputLastName"
+                                type="text"
+                                value={newLastName}
+                                onChange={(e) => setNewLastName(e.target.value)}
+                                className="form-control"
+                                placeholder="Digite el apellido"
+                              />
+                            </div>
+
+                          </div>
+
+                          <div className="modal-footer">
+                            <button className="btn btn-primary" onClick={addEmployee}>
+
+                              Agregar
+                            </button>
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={closeModal}>Cerrar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <input
                       id='inputBuscar'
                       type="text"

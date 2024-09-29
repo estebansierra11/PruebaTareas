@@ -44,20 +44,20 @@ ORDER BY totalDays ASC;
 
     db.query(sql, (err, result) => {
         if (err) {
-            return res.json({ message: 'Error fetching tasks' });
+            return res.json({ message: 'Error' });
         }
         res.json(result);
     });
 }
 
 function getEmployee(req, res) {
-    const { username } = req.query;
+    //const { username } = req.query;
     const sql = `
         SELECT * FROM employee`;
 
     db.query(sql, (err, result) => {
         if (err) {
-            return res.json({ message: 'Error fetching tasks' });
+            return res.json({ message: 'Error' });
         }
         res.json(result);
     });
@@ -72,7 +72,7 @@ function updateTask(req, res) {
 
     db.query(sql, (err) => {
         if (err) {
-            return res.json({ message: 'Error updating task' });
+            return res.json({ message: 'Error' });
         }
         res.json({ message: 'Tarea actualizada' });
     });
@@ -86,9 +86,9 @@ function markProgress(req, res) {
 
     db.query(sql, (err) => {
         if (err) {
-            return res.json({ message: 'Error updating task' });
+            return res.json({ message: 'Error' });
         }
-        res.json({ message: 'Tarea actualizada' });
+        res.json({ message: 'actualizada' });
     });
 }
 
@@ -105,6 +105,21 @@ function addTask(req, res) {
         res.json({ message: 'Tarea agregada' });
     });
 }
+
+function addEmployee(req, res) {
+    const {newName, newLastName } = req.body;
+    const sql = `INSERT INTO employee (name, lastname) VALUES ('${newName}', '${newLastName}')`;
+    //console.log(sql);
+
+    db.query(sql, (err) => {
+        if (err) {
+            return res.json({ message: 'Error' });
+        }
+        res.json({ message: 'Empleado agregada' });
+    });
+}
+
+
 
 
 
@@ -134,6 +149,10 @@ app.get('/getEmployee', (req, res) => {
 
 app.post('/addTasks', (req, res) => {
     addTask(req, res);
+});
+
+app.post('/addEmployee', (req, res) => {
+    addEmployee(req, res);
 });
 
 app.put('/', (req, res) => {

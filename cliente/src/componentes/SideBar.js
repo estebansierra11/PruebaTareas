@@ -17,7 +17,7 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
                     <li title='Inicio'>
                         <Link to="/home">
                             <FontAwesomeIcon icon={faHome} />
-                            {isOpen && <span>Home</span>}
+                            {isOpen && <span>Inicio</span>}
                         </Link>
                     </li>
                     <li title='Tareas'>
@@ -29,13 +29,13 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
                     <li>
                         <Link to="/login">
                             <FontAwesomeIcon icon={faUsers} />
-                            {isOpen && <span>Clients</span>}
+                            {isOpen && <span>Empleados</span>}
                         </Link>
                     </li>
                     <li>
                         <Link to="/contact">
                             <FontAwesomeIcon icon={faEnvelope} />
-                            {isOpen && <span>Contact</span>}
+                            {isOpen && <span>Info</span>}
                         </Link>
                     </li>
                 </ul>
