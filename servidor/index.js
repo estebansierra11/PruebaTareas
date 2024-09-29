@@ -78,6 +78,20 @@ function updateTask(req, res) {
     });
 }
 
+function markProgress(req, res) {
+    const { id} = req.body;
+    const sql =
+        `UPDATE tasks SET completed='En progreso' WHERE id=${id}`;
+        
+
+    db.query(sql, (err) => {
+        if (err) {
+            return res.json({ message: 'Error updating task' });
+        }
+        res.json({ message: 'Tarea actualizada' });
+    });
+}
+
 function addTask(req, res) {
     const { task, id, dateLimit, employee } = req.body;
     //const date = dateLimit.replace('T', ' ');
@@ -124,6 +138,10 @@ app.post('/addTasks', (req, res) => {
 
 app.put('/', (req, res) => {
     updateTask(req, res);
+});
+
+app.put('/markProgress', (req, res) => {
+    markProgress(req, res);
 });
 
 

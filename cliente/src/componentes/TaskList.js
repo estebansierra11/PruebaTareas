@@ -79,8 +79,10 @@ const TaskList = ({ user, onLogout }) => {
 
 
   const addTask = async () => {
-    console.log(employee);
-    if (task !== '') {
+    const currentDate = new Date();
+    const dateNow = currentDate.toISOString().slice(0, 19);
+    console.log(dateNow);
+    if (task !== '' && dateLimit !== '' && employee !== '' && dateLimit > dateNow) {
       await fetch('http://localhost:3001/addTasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -89,10 +91,12 @@ const TaskList = ({ user, onLogout }) => {
 
       toast.success('Tarea agregada con éxito!');
       setTask('');
+      setDateLimit('');
+      setEmployee('');
       fetchTasks();
       handleCloseModal();
     } else {
-      Swal.fire("El campo no puede estar vacío!");
+      Swal.fire("Los campos no pueden estar vacíos y la fecha no puede ser menor a la actual!");
     }
   };
 
@@ -178,6 +182,15 @@ const TaskList = ({ user, onLogout }) => {
     fetchTasks();
   };
 
+  const markProgress = async (id) => {
+    await fetch('http://localhost:3001/markProgress', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    fetchTasks();
+  };
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
@@ -219,7 +232,7 @@ const TaskList = ({ user, onLogout }) => {
                       <FontAwesomeIcon icon={faPlus} />
                     </button>
 
-                    {}
+                    { }
                     <div className={`modal fade ${isModalOpen ? 'show d-block' : ''}`} tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                       <div className="modal-dialog modal-dialog-centered" role="document">
                         <div className="modal-content">
@@ -252,7 +265,7 @@ const TaskList = ({ user, onLogout }) => {
                                 placeholder="Escribe la tarea"
                               >
                                 <option value="" >selecciona</option>
-                                {dataEmployee.map((dEmployee)=>(
+                                {dataEmployee.map((dEmployee) => (
                                   <option key={dEmployee.id} value={dEmployee.id}>
                                     {dEmployee.name}
                                   </option>
@@ -275,10 +288,10 @@ const TaskList = ({ user, onLogout }) => {
 
                           <div className="modal-footer">
                             <button className="btn btn-success" onClick={addTask}>
-                              <FontAwesomeIcon icon={faSave} className="mr-1" />
+
                               Agregar
                             </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModal}>Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModal}>Cerrar</button>
                           </div>
                         </div>
                       </div>
@@ -286,7 +299,11 @@ const TaskList = ({ user, onLogout }) => {
                   </div>
                 </div>
                 <div className="align-right">
+
                   <div className="input-group flex-nowrap">
+                    <button className="btn btn-success" style={{ marginRight: '5px' }} onClick={handleOpenModal}>
+                      Agregar Empleado
+                    </button>
                     <input
                       id='inputBuscar'
                       type="text"
@@ -357,8 +374,12 @@ const TaskList = ({ user, onLogout }) => {
                               <span className="button-text">Editar</span>
                               <FontAwesomeIcon icon={faEdit} className="button-icon" />
                             </button>
-                            <button className="btn btn-primary" id='boton' style={{ marginRight: '3px', display: task.completed === 'Hecha' ? 'none' : '' }} onClick={() => markTask(task.id)}>
+                            <button className="btn btn-success" id='boton' style={{ marginRight: '3px', display: task.completed === 'Hecha' ? 'none' : '' }} onClick={() => markTask(task.id)}>
                               <span className="button-text">Hecha</span>
+                              <FontAwesomeIcon icon={faCheck} className="button-icon" />
+                            </button>
+                            <button className="btn btn-primary" id='boton' style={{ marginRight: '3px', display: task.completed === 'Hecha' ? 'none' : '' }} onClick={() => markProgress(task.id)}>
+                              <span className="button-text">Empezar</span>
                               <FontAwesomeIcon icon={faCheck} className="button-icon" />
                             </button>
                             <button className="btn btn-danger" id='boton' onClick={() => confirmDeleteTask(task.id)}>
