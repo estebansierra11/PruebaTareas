@@ -1,7 +1,7 @@
 .sidebar {
     height: 100%;
     width: 50px;
-    /* Establece el ancho inicial de la barra lateral cuando está cerrada */
+    
     position: fixed;
     top: 0;
     left: 0;
@@ -14,15 +14,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Centra el contenido horizontalmente */
+    
 }
 
 .sidebar.open {
     width: 250px;
-    /* Ancho de la barra lateral cuando está abierta */
+ 
     align-items: flex-start;
     padding-left: 10px;
-    /* Alinea el contenido a la izquierda cuando está abierta */
+    
 }
 
 .toggle-button {
@@ -35,9 +35,9 @@
     padding: 10px;
     cursor: pointer;
     z-index: 1001;
-    /* Asegura que esté sobre la sidebar */
+ 
     font-size: 20px;
-    /* Tamaño del ícono */
+   
 }
 
 .sidebar-content {
@@ -48,7 +48,7 @@
     list-style-type: none;
     padding: 0;
     width: 100%;
-    /* Asegura que el ul ocupe todo el ancho disponible */
+    
 }
 
 .sidebar ul li {
@@ -58,18 +58,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Centra el contenido horizontalmente */
+  
     transition: background-color 0.3s;
 }
 
 .sidebar ul li:hover {
     background-color: #575757;
-    /* Aplica el hover al li */
+  
 }
 
 .sidebar.open ul li {
     justify-content: flex-start;
-    /* Alinea el contenido a la izquierda cuando está abierta */
+    
 }
 
 .sidebar.open .sidebar-content {
@@ -97,7 +97,7 @@
 
 .sidebar ul li a .fa-icon {
     width: 60px;
-    /* Ajusta el ancho del ícono */
+   
     text-align: center;
-    /* Centra el ícono dentro de su contenedor */
+    
 }

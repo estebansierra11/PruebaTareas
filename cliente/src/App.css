@@ -1,25 +1,25 @@
 .App {
   display: flex;
   text-align: center;
-  flex-direction: column; /* Cambia la dirección del flexbox a columna para pantallas más pequeñas */
+  flex-direction: column; 
 }
 
 .content {
-  margin-left: 60px; /* Ancho de la sidebar cuando está cerrada */
+  margin-left: 60px;
   padding: 20px;
   transition: margin-left 0.3s;
   flex-grow: 1;
 }
 
 .content-login {
-  margin-left: 0px; /* Ancho de la sidebar cuando está cerrada */
+  margin-left: 0px; 
   padding: 20px;
   transition: margin-left 0.3s;
   flex-grow: 1;
 }
 /*
 .content-shift {
-  margin-left: 250px;  Ancho de la sidebar cuando está abierta 
+  margin-left: 250px;  
 }
 */
 
